@@ -4,17 +4,11 @@
     <div class="panel panel-primary">
       <div class="panel-heading">HOME</div>
       <div class="panel-body">
-        <form action="/action_page.php">
-          <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" class="form-control" id="email">
-          </div>
-          <div class="form-group">
-            <label for="pwd">Full Name:</label>
-            <input type="text" class="form-control" id="pwd">
-          </div>
-          <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        <div>Current Count: {{ count$ | async }}</div>
+        <hr>
+        <button (click)="increment()">Increment</button>
+        <button (click)="decrement()">Decrement</button>
+        <button (click)="reset()">Reset Counter</button>
       </div>
     </div>
   </div>
