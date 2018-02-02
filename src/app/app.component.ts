@@ -1,34 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { INCREMENT, DECREMENT, RESET } from './counter';
+import { INCREMENT, DECREMENT, RESET, ADDCITY } from './counter';
+import { Http, Response } from '@angular/http';
+import 'rxjs/add/operator/map';
+import { UserService } from './service';
 
 
-interface AppState {
-  count: number;
+interface city {
+  title: string,
+  location_type: string,
+  woeid: string,
+  latt_long: string
 }
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+  @Input() searchQuery = "";
+  addedCity$: Observable<city>;
+  data = [];
+  redux_city: any;
 
-  count$: Observable<number>;
-
-  constructor(private store: Store<AppState>) {
-    this.count$ = store.pipe(select('count'));
+  constructor(private store: Store<city>, private http: Http, private userService: UserService) {
+    this.addedCity$ = store.pipe(select('city'));
   }
 
-  increment() {
-    this.store.dispatch({ type: INCREMENT });
+  getCityDetails() {
+    this.userService.getCityService(this.searchQuery).subscribe(response => {
+      this.data = response;
+    })
   }
 
-  decrement() {
-    this.store.dispatch({ type: DECREMENT });
-  }
+  addCityRecord(obj: any) {
+    this.store.dispatch({
+      type: ADDCITY,
+      city: obj
+    });
 
-  reset() {
-    this.store.dispatch({ type: RESET });
+    this.store.subscribe((res) => {
+      this.redux_city = res;
+      console.log(this.redux_city);
+    });
   }
 }

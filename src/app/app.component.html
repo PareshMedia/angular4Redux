@@ -2,13 +2,63 @@
 <div class="container-fluid align-center">
   <div class="col-md-12">
     <div class="panel panel-primary">
-      <div class="panel-heading">HOME</div>
+      <div class="panel-heading">CITY</div>
       <div class="panel-body">
-        <div>Current Count: {{ count$ | async }}</div>
-        <hr>
-        <button (click)="increment()">Increment</button>
-        <button (click)="decrement()">Decrement</button>
-        <button (click)="reset()">Reset Counter</button>
+        <div class="form-inline">
+          <div class="form-group mx-sm-3 mb-2">
+            <label class="sr-only">City name</label>
+            <input type="text" class="form-control" placeholder="Enter string ex: cas" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}">
+          </div>
+          <button type="submit" class="btn btn-primary mb-2" (click)="getCityDetails()">Submit</button>
+        </div>
+        <br>
+        <div class="table-responsive" *ngIf="data.length>0">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>City Name</th>
+                <th>Woe ID</th>
+                <th>Latt,Long</th>
+                <th>ADD</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of data; index as k">
+                <td>{{c.title}}</td>
+                <td>{{c.woeid}}</td>
+                <td>{{c.latt_long}}</td>
+                <td>
+                  <button class="btn btn-info" (click)="addCityRecord(c)">Add</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">REDUX DATA</div>
+      <div class="panel-body">
+        {{addedCity | async}}
+        <div class="table-responsive" *ngIf="redux_city">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>City Name</th>
+                <th>Woe ID</th>
+                <th>Latt,Long</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{redux_city.cityDetails.title}}</td>
+                <td>{{redux_city.cityDetails.woeid}}</td>
+                <td>{{redux_city.cityDetails.latt_long}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
