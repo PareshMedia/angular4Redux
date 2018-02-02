@@ -22,14 +22,19 @@ export class AppComponent {
   addedCity$: Observable<city>;
   data = [];
   redux_city: any;
+  is_loading: boolean;
+  noResult = false;
 
   constructor(private store: Store<city>, private http: Http, private userService: UserService) {
     this.addedCity$ = store.pipe(select('city'));
   }
 
   getCityDetails() {
+    this.is_loading = true;
     this.userService.getCityService(this.searchQuery).subscribe(response => {
       this.data = response;
+      this.noResult = (this.data.length > 0) ? false : true;
+      this.is_loading = false;
     })
   }
 
