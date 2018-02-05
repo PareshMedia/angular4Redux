@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
-import { counterReducer } from './counter';
+import { items } from './items';
 import { HttpModule } from '@angular/http';
 import { UserService } from './service';
 
@@ -15,7 +15,7 @@ import { UserService } from './service';
     HttpModule,
     BrowserModule,
     FormsModule,
-    StoreModule.forRoot({ cityDetails: counterReducer })
+    StoreModule.forRoot({ items })
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

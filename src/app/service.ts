@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/map';
+import { City } from './city.model';
 
 @Injectable()
 export class UserService {
+    items: Observable<Array<City>>;
     constructor(
         private http: Http
     ) { }

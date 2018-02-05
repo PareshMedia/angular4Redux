@@ -1,32 +1,44 @@
 import { Component, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { INCREMENT, DECREMENT, RESET, ADDCITY } from './counter';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { UserService } from './service';
+import { items, selectedItem } from './items';
+import { City } from './city.model';
 
+export interface AppStore {
+  items: City[];
+  selectedItem: City;
+};
 
-interface city {
-  title: string,
-  location_type: string,
-  woeid: string,
-  latt_long: string
-}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
   @Input() searchQuery = "";
-  addedCity$: Observable<city>;
-  data = [];
-  redux_city: any;
+
   is_loading: boolean;
   noResult = false;
 
-  constructor(private store: Store<city>, private http: Http, private userService: UserService) {
-    this.addedCity$ = store.pipe(select('city'));
+  items: Observable<Array<City>>;
+  selectedItem: Observable<City>;
+
+  data = [];
+  reduxData = {
+    items: [],
+    selectedItem: null
+  };
+
+  constructor(
+    private store: Store<AppStore>,
+    private http: Http, private userService: UserService
+  ) {
+    this.store.subscribe((res) => {
+      this.reduxData = res;
+      console.log(res);
+    });
   }
 
   getCityDetails() {
@@ -40,13 +52,13 @@ export class AppComponent {
 
   addCityRecord(obj: any) {
     this.store.dispatch({
-      type: ADDCITY,
-      city: obj
+      type: 'CREATE_ITEM', payload: obj
     });
+  }
 
-    this.store.subscribe((res) => {
-      this.redux_city = res;
-      console.log(this.redux_city);
+  removeCity(obj: any) {
+    this.store.dispatch({
+      type: 'DELETE_ITEM', payload: obj
     });
   }
 }

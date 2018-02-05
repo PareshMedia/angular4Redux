@@ -1,17 +1,16 @@
 <br>
 <div class="container-fluid align-center">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <div class="panel panel-primary">
       <div class="panel-heading">CITY</div>
       <div class="panel-body">
-
-
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-12">
             <div class="form-inline">
               <div class="form-group mx-sm-3 mb-2">
                 <label class="sr-only">City name</label>
-                <input type="text" class="form-control" placeholder="Enter string ex: cas" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}" (keyup.enter)="getCityDetails()">
+                <input type="text" class="form-control" placeholder="Enter string ex: cas" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}"
+                  (keyup.enter)="getCityDetails()">
               </div>
               <button type="submit" class="btn btn-primary mb-2" (click)="getCityDetails()">Submit</button>
               <img src="../assets/loading.gif" *ngIf="is_loading" style="width: 34px;">
@@ -44,36 +43,39 @@
               </table>
             </div>
           </div>
-          <div class="col-md-6" *ngIf="redux_city">
-            <div class="panel panel-primary">
-              <div class="panel-heading">REDUX DATA</div>
-              <div class="panel-body">
-                {{addedCity | async}}
-                <div class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>City Name</th>
-                        <th>Woe ID</th>
-                        <th>Latt,Long</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{{redux_city.cityDetails.title}}</td>
-                        <td>{{redux_city.cityDetails.woeid}}</td>
-                        <td>{{redux_city.cityDetails.latt_long}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-
       </div>
     </div>
 
+  </div>
+  <div class="col-md-6" *ngIf="reduxData.items.length>0">
+    <div class="panel panel-primary">
+      <div class="panel-heading">REDUX DATA</div>
+      <div class="panel-body">
+        {{addedCity | async}}
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>City Name</th>
+                <th>Woe ID</th>
+                <th>Latt,Long</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of reduxData.items; index as k">
+                <td>{{c.title}}</td>
+                <td>{{c.woeid}}</td>
+                <td>{{c.latt_long}}</td>
+                <td>
+                  <button class="btn btn-info" (click)="removeCity(c)">Remove</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
