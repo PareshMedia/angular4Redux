@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { UserService } from './service';
-import { items, selectedItem } from './items';
+import { items } from './items';
 import { City } from './city.model';
 
 export interface AppStore {
@@ -18,12 +18,9 @@ export interface AppStore {
 })
 export class AppComponent {
   @Input() searchQuery = "";
-
   is_loading: boolean;
   noResult = false;
-
   items: Observable<Array<City>>;
-  selectedItem: Observable<City>;
 
   data = [];
   reduxData = {
@@ -33,7 +30,8 @@ export class AppComponent {
 
   constructor(
     private store: Store<AppStore>,
-    private http: Http, private userService: UserService
+    private http: Http,
+    private userService: UserService
   ) {
     this.store.subscribe((res) => {
       this.reduxData = res;
