@@ -6,6 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { items } from './items';
 import { HttpModule } from '@angular/http';
 import { UserService } from './service';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,10 @@ import { UserService } from './service';
     HttpModule,
     BrowserModule,
     FormsModule,
-    StoreModule.forRoot({ items })
+    StoreModule.forRoot({ items }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 5
+    })
   ],
   providers: [UserService],
   bootstrap: [AppComponent]
