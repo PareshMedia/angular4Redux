@@ -7,6 +7,8 @@ import { items } from './items';
 import { HttpModule } from '@angular/http';
 import { UserService } from './service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { DBModule } from '@ngrx/db';
+import { db_schema } from './db';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     StoreModule.forRoot({ items }),
     StoreDevtoolsModule.instrument({
       maxAge: 5
-    })
+    }),
+    DBModule.provideDB(db_schema),
   ],
   providers: [UserService],
   bootstrap: [AppComponent]
