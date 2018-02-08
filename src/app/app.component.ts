@@ -27,14 +27,7 @@ export class AppComponent {
     items: [],
     selectedItem: null
   };
-
-
-  tempObj = {
-    "title": "Newcastle",
-    "location_type": "City",
-    "woeid": 30079,
-    "latt_long": "54.977940,-1.611620"
-  };
+  woeid = [];
 
   constructor(
     private store: Store<AppStore>,
@@ -44,17 +37,36 @@ export class AppComponent {
   ) {
     //INDEXDB 
     this.db.open("itemsDB", 1);
-    
+    this.db.query("items").subscribe((queryRes) => {
+      this.store.dispatch({
+        type: 'CREATE_ITEM', payload: queryRes
+      });
+      this.woeidOperations(queryRes.woeid, "ADD");
+    });
+
     this.store.subscribe((res) => {
       this.reduxData = res;
       console.log("GET ITEMS STORE=>", res);
     });
+  }
 
-    this.db.query("items").subscribe((queryRes){
-      this.store.dispatch({
-        type: 'CREATE_ITEM', payload: queryRes
-      });
-    });
+  woeidOperations(id: number, type: string) {
+    switch (type) {
+      case "ADD": this.woeid.push(id);
+        break;
+
+      case "REMOVE":
+        var index = this.woeid.indexOf(id);
+        if (index > -1) this.woeid.splice(index, 1);
+        break;
+
+      case "CHECK":
+        if (this.woeid.indexOf(id) == -1) {
+          return false;
+        } else {
+          return true;
+        }
+    }
 
   }
 
@@ -69,27 +81,42 @@ export class AppComponent {
   }
 
   addCityRecord(obj: any) {
-    this.store.dispatch({
-      type: 'CREATE_ITEM', payload: obj
-    });
-    this.ngrxDB_Operatation(obj, "ADD");
+    if (!this.woeidOperations(obj.woeid, "CHECK")) {
+      this.ngrxDB_Operatation(obj, "ADD");
+      this.db.query("items").subscribe((queryRes) => {
+        if (obj.woeid === queryRes.woeid) {
+          this.store.dispatch({
+            type: 'CREATE_ITEM', payload: queryRes
+          });
+          this.woeidOperations(queryRes.woeid, "ADD");
+        }
+      });
+    } else {
+      alert("Alredy Exist !!");
+    }
   }
 
   removeCity(obj: any) {
-    console.log("FROM REMOVE CITY->,"obj);
-    this.store.dispatch({
-      type: 'DELETE_ITEM', payload: obj
+    this.db.query("items").subscribe((queryRes) => {
+      if (queryRes.woeid == obj.woeid) {
+        console.log(obj);
+        this.store.dispatch({
+          type: 'DELETE_ITEM', payload: obj
+        });
+        this.woeidOperations(obj.woeid, "REMOVE");
+        this.ngrxDB_Operatation(obj, "REMOVE");
+      }
     });
-    this.ngrxDB_Operatation(obj, "REMOVE");
   }
 
   ngrxDB_Operatation(obj, type: string) {
     if (type == "ADD") {
-      this.db.insert("items", [obj], true).subscribe((resinsert) => {
-        console.log("INSERT DB->", resinsert);
+      this.db.insert("items", [obj], true).subscribe((insertRes) => {
       });
-    } else if (type == "REMOVE") {
 
+    } else if (type == "REMOVE") {
+      this.db.executeWrite("items", "delete", [obj.id]).subscribe((deleteObj) => {
+      });
     }
   }
 }
